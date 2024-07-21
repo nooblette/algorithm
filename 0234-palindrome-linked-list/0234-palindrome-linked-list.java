@@ -10,24 +10,20 @@
  */
 class Solution {
     public boolean isPalindrome(ListNode head) {
-        // 스택 선언
-        // 주의 : 스택을 이렇게 선언해선 안됨(자바 초기 자료형의 성능 문제)
-        Stack<Integer> stack = new Stack<>();
+        Deque<Integer> deque = new LinkedList<>();
         
-        // 연결리스트를 스택에 삽입
+        // 연결리스트를 데크에 삽입
         ListNode node = head;
         while(node != null) {
-            stack.add(node.val);
+            deque.add(node.val);
             node = node.next;
         }
         
-        // 연결 리스트가 모두 빌 때까지 비교
-        while(head != null) {
-            if(head.val != stack.pop()) {
+        // 데크가 모두 비거나(길이가 짝수인 경우) 1개 이하(길이가 홀수인 경우)가 될 때까지 비교
+        while(!deque.isEmpty() && deque.size() > 1) {
+            if(deque.pollFirst() != deque.pollLast()) {
                 return false;
             }
-            
-            head = head.next;
         }
         
         return true;
