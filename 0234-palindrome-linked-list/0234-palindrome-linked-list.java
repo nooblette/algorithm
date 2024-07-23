@@ -10,20 +10,37 @@
  */
 class Solution {
     public boolean isPalindrome(ListNode head) {
-        Deque<Integer> deque = new LinkedList<>();
+        ListNode slow = head;
+        ListNode fast = head;
         
-        // 연결리스트를 데크에 삽입
-        ListNode node = head;
-        while(node != null) {
-            deque.add(node.val);
-            node = node.next;
+        // 빠른 러너가 끝까지 갈 때까지 느린 러너와 함께 진행
+        while(fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
         }
         
-        // 데크가 모두 비거나(길이가 짝수인 경우) 1개 이하(길이가 홀수인 경우)가 될 때까지 비교
-        while(!deque.isEmpty() && deque.size() > 1) {
-            if(deque.pollFirst() != deque.pollLast()) {
+        // 전체 길이가 홀수인 경우
+        if(fast != null) {
+            slow = slow.next;
+        }
+        
+        // 역순 연결 리스트 만들기
+        ListNode rev = null;
+        while(slow != null) {
+            ListNode next = slow.next;
+            slow.next = rev;
+            rev = slow;
+            slow = next;
+        }
+        
+        // 역순 연결리스트와 입력값을 비교
+        while(rev != null) {
+            if(rev.val != head.val) {
                 return false;
             }
+            
+            rev = rev.next;
+            head = head.next;
         }
         
         return true;
