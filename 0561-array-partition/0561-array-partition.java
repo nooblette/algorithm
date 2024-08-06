@@ -4,18 +4,11 @@ class Solution {
         Arrays.sort(nums);
         
         int sum = 0;
-        List<Integer> pair = new ArrayList<>();
-        
-        // 앞에서부터 오름차순 반복
-        for(int n : nums) {
-            pair.add(n);
-            
-            // 페어 변수에 값이 2개 채워지면 min 값을 구하고 sum에 추가
-            if(pair.size() == 2){
-                sum += Collections.min(pair);
-                
-                // pair 초기화
-                pair.clear();
+        // 앞에서부터 오름차순으로 반복
+        for(int i = 0; i < nums.length; i++) {
+            // 짝수번째일때 값의 합 계산
+            if(i % 2 == 0) {
+                sum += nums[i];
             }
         }
         
