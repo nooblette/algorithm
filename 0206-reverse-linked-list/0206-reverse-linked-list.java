@@ -9,22 +9,21 @@
  * }
  */
 class Solution {
-    private ListNode reverse(ListNode node, ListNode prev) {
-        if(node == null) {
-            return prev;
+    public ListNode reverseList(ListNode head) {
+        ListNode node = head, prev = null;
+        while(node != null) {
+            // 현재 노드의 다음 노드를 변수에 저장
+            ListNode next = node.next;
+            
+            // 연결 리스트 뒤집기 : 현재 노드의 다음 노드를 이전 노드로 변경
+            node.next = prev;
+            
+            // 다음 노드를 node로, 현재 노드를 prev로 변경하여 반복
+            prev = node;
+            node = next;
         }
         
-        // 현재 노드의 다음 노드를 변수에 저장
-        ListNode next = node.next;
-        
-        // 연결 리스트 뒤집기 : 현재 노드의 다음 노드를 이전 노드로 변경
-        node.next = prev;
-        
-        // 다음 노드를 node로, 현재 노드를 prev로 전달하여 재귀 호출
-        return reverse(next, node);
-        
-    }
-    public ListNode reverseList(ListNode head) {
-        return reverse(head, null);
+        // prev는 뒤집힌 연결 리스트의 첫번째 노드
+        return prev;
     }
 }
