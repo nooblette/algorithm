@@ -1,0 +1,41 @@
+class MyStack() {
+    // 큐 변수, 구현체는 LinkedList로 선언한다.
+    val queue: Queue<Int> = LinkedList()
+
+    fun push(x: Int) {
+        // 엘리먼트 삽입
+        queue.add(x)
+         
+        // 큐에 엘리먼트를 삽입했으므로 방금 삽입한 엘리먼트는 나중에 나오게된다.
+        // 하지만 스택은 나중에 삽입한 엘리먼트가 먼저 나와야하므로 큐를 뒤집는다.
+        for(i in 0 until queue.size - 1) {
+            queue.add(queue.remove());
+        }
+
+    }
+
+    fun pop(): Int {
+        // push() 연산을 수행할때마다 역순으로 재정렬하므로 큐 연산으로 간단히 추출할 수 있다.
+        return queue.remove();
+    }
+
+    fun top(): Int {
+        // push() 연산을 수행할때마다 역순으로 재정렬하므로 큐 연산으로 간단히 추출할 수 있다.
+        return queue.peek();
+    }
+
+    fun empty(): Boolean {
+        // 크기를 비교해 비어있는지 확인
+        return queue.size == 0;
+    }
+
+}
+
+/**
+ * Your MyStack object will be instantiated and called as such:
+ * var obj = MyStack()
+ * obj.push(x)
+ * var param_2 = obj.pop()
+ * var param_3 = obj.top()
+ * var param_4 = obj.empty()
+ */
