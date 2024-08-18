@@ -1,10 +1,10 @@
 class Solution {
     // 좌표와 원점으로부터의 거리(distance)를 갖는 Point 클래스 선언
     static class Point {
-        double distance;
+        long distance;
         int[] point;
         
-        public Point(double distance, int[] point) {
+        public Point(long distance, int[] point) {
             this.distance = distance;
             this.point = point;
         }
@@ -17,7 +17,7 @@ class Solution {
         // 파라미터로 받은 좌표 목록 순회
         for(int[] point : points) {
             // 유클리드 거리 계산
-            double distance = Math.sqrt((long) point[0] * point[0] + (long) point[1] * point[1]);
+            long distance = (long) point[0] * point[0] + (long) point[1] * point[1];
             
             // 우선순위 큐에 추가
             pq.add(new Point(distance, point));
