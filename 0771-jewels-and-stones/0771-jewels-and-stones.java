@@ -1,27 +1,19 @@
 class Solution {
     public int numJewelsInStones(String jewels, String stones) {
-        Map<Character, Integer> freqs = new HashMap<>();
+        Set<Character> freqs = new HashSet<>();
         
-        for(char s : stones.toCharArray()) {
-            // 만약 이미 계산한 돌이면 기존값 + 1
-            if(freqs.containsKey(s)) {
-                freqs.put(s, freqs.get(s) + 1);
-            }
-
-            // 처음 보는 돌이면 hash에 추가
-            else {
-                freqs.put(s, 1);
-            }
+        // 보석 추출 및 저장, 종류별로 하나만 저장된다.
+        for(char j : jewels.toCharArray()) {
+            freqs.add(j);
         }
         
         int count = 0;
-        for(char j : jewels.toCharArray()) {
-            // 보석과 일치하는 돌의 개수를 합산
-            if(freqs.containsKey(j)) {
-                count += freqs.get(j);
+        // stones를 추출해서 저장했던 보석과 일치하는지 비교한다. 일치한다면 count를 증가한다.
+        for(char c : stones.toCharArray()) {
+            if(freqs.contains(c)) {
+                count++;
             }
         }
-
         return count;
     }
 }
