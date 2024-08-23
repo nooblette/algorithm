@@ -6,38 +6,21 @@ class Solution {
             frequencyMap.put(num, frequencyMap.getOrDefault(num, 0) + 1);
         }
         
-        // frequencyMap을 단순히 숫자가 등장한 빈도로 저장
-        Map<Integer, List<Integer>> buckets = new HashMap<>();
+        // 빈도순으로 정렬되는 우선순위 큐 선언
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> b[1] - a[1]);
 
-        // frequencyMap의 키 목록(등장한 숫자 목록) 조회
-        for(int element : frequencyMap.keySet()) {
-            // freq : 해당 숫자(element)가 등장한 빈도 조회
-            int freq = frequencyMap.get(element);
-
-            // elems : 해당 빈도만큼 등장한 숫자(element) 목록
-            List<Integer> elems = buckets.getOrDefault(freq, new ArrayList<Integer>());
-            elems.add(element);
-            buckets.put(freq, elems);
+        // 우선순위 큐에 각 엘리먼트와 빈도 수 삽입
+        for(int elem : frequencyMap.keySet()) {
+            pq.add(new int[]{elem, frequencyMap.get(elem)});
         }
         
-        // 빈도가 가장 높은 k개를 추출한다.
         int[] result = new int[k];
-        int index = 0;
 
-        // nums가 모두 동일한 숫자로 구성, 즉 빈도와 nums의 길이가 같은 경우부터 -1씩 감소하며 순회
-        for(int freq = nums.length; freq >= 0 && index < k; freq--) {
-            if(buckets.get(freq) == null) {
-                continue;
-            }
-
-            for(int ele : buckets.get(freq)) {
-                result[index] = ele;
-
-                // 가장 높은 k개만 추출하면 되므로 index < k 조건을 둔다.
-                index++;
-            }
+        // k번까지만 우선순위 큐에서 원소를 추출한다.
+        for(int i = 0; i < k; i++) {
+            result[i] = pq.poll()[0];
         }
-        
+
         return result;
     }
 }
