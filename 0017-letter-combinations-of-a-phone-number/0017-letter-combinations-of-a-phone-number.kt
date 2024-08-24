@@ -37,8 +37,8 @@ class Solution {
             }
 	    }
 	
-    // 현재자리 0, 빈 문자열 이용 DFS 시작
-	dfs(0, StringBuilder())
-	return result
+        // 현재자리 0, 빈 문자열 이용 DFS 시작
+        dfs(0, StringBuilder())
+        return result
     }
 }
