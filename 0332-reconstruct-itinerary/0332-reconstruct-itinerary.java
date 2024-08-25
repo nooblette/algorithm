@@ -1,35 +1,31 @@
 class Solution {
-    public void dfs(
-        List<String> results, 
-        Map<String, PriorityQueue<String>> fromToMap, 
-        String from
-    ) {
-        // from -> to 값이 존재하는 경우 재귀 DFS
-        while(fromToMap.containsKey(from) && !fromToMap.get(from).isEmpty()) {
-            // 사전상 첫 위치부터 우선순위 큐를 이용해 목적지 추출, 재귀 DFS 진행
-            dfs(results, fromToMap, fromToMap.get(from).poll());
-        }
-
-        // 재귀 DFS가 모두 끝나면 최종 도착지이므로, 여기서부터 출발지까지 앞으로 삽입한다.
-        results.add(0, from);
-    }
-
     public List<String> findItinerary(List<List<String>> tickets) {
-        // LinkedList : 가장 앞에 원소를 추가할 때 시간복잡도가 O(1)
-        List<String> results = new LinkedList();
-        
-        // from -> to map
         Map<String, PriorityQueue<String>> fromToMap = new HashMap<>();
         
-        // 여행 일정 tickets로 그래프 구성
+        // 여행 일정을 위해 from -> to 그래프 구성
         for(List<String> ticket : tickets) {
-            fromToMap.putIfAbsent(ticket.get(0), new PriorityQueue());
+            // 값이 존재하지 않을 경우 빈 우선순위 큐 먼저 생성
+            fromToMap.putIfAbsent(ticket.get(0), new PriorityQueue<>());
+
+            // 우선순위 큐에 경로 추가, 항상 사전 어휘순으로 오름차순 정렬된다.
             fromToMap.get(ticket.get(0)).add(ticket.get(1));
         }
         
-        // 재귀 dfs 시작
-        dfs(results, fromToMap, "JFK");
+        List<String> results = new LinkedList();
+        Deque<String> stack = new ArrayDeque<>();
+        // 출발지 삽입
+        stack.push("JFK");
+        while(!stack.isEmpty()) {
+            // 스택에서 추출될 값을 출발지로 한 도착지 처리
+            while(fromToMap.containsKey(stack.getFirst()) && !fromToMap.get(stack.getFirst()).isEmpty()) {
+                // 사전 어휘순으로 도착지 출력
+                stack.push(fromToMap.get(stack.getFirst()).poll());
+            }
+            
+            // stack의 top부터 값을 추출하여 정답 구성
+            results.add(0, stack.pop());
+        }
         
         return results;
-    } 
+    }
 }
