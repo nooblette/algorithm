@@ -18,12 +18,14 @@ class Solution {
             path.add(c);
             
             // dfs 재귀 호출
+            // 현재 탐색을 진행중인 노드의 인덱스 i를 전달한다. (자식 노드는 이 i부터 탐색을 시작)
             dfs(results, path, candidates, sum + c, target, i);
             
             // c 제거
             path.removeLast();
         }
     }
+    
     public List<List<Integer>> combinationSum(int[] candidates, int target) {
         List<List<Integer>> results = new ArrayList<>();
         
