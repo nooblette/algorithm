@@ -20,16 +20,16 @@ class Solution {
             return null;
         }
         
-        // 왼쪽/오른쪽 자식 노드 스왑
-        TreeNode tmp = root.left;
-        root.left = root.right;
-        root.right = tmp;
-        
         // 왼쪽 자식 노드 dfs
         invertTree(root.left);
         
         // 오른쪽 자식 노드 dfs
         invertTree(root.right);
+        
+        // 왼쪽/오른쪽 자식 노드 스왑
+        TreeNode tmp = root.left;
+        root.left = root.right;
+        root.right = tmp;
         
         return root;
     }
