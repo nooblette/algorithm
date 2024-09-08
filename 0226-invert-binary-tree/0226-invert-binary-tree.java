@@ -15,33 +15,21 @@
  */
 class Solution {
     public TreeNode invertTree(TreeNode root) {
-        Queue<TreeNode> q = new LinkedList<>();
-        q.add(root);
-        
-        // bfs 탐색
-        while(!q.isEmpty()) {
-            int qSize = q.size();
-            
-            // 현재 레벨의 너비만큼 반복
-            for(int i = 0; i < qSize; i++) {
-                TreeNode node = q.remove();
-                
-                // 예외 처리
-                if(node == null) {
-                    continue;
-                }
-                
-                // 왼쪽 노드와 오른족 노드를 뒤집는다.
-                TreeNode tmp = node.left;
-                node.left = node.right;
-                node.right = tmp;
-                
-                // 두 자식 노드를 queue에 삽입
-                q.add(node.left);
-                q.add(node.right);
-            }
+        // 빈 노드에 도달하면 null 반환
+        if(root == null) {
+            return null;
         }
         
-        return root;
+        // 현재 노드의 값을 복사한 신규 노드 생성
+        TreeNode newNode = new TreeNode(root.val);
+        
+        // 왼쪽 자식 노드는 현재 노드의 오른쪽 자식 노드에 대해 재귀 DFS 진행
+        newNode.left = invertTree(root.right);
+        
+        // 오른쪽 자식 노드는 현재 노드의 왼쪽 자신 노드에 대해 재귀 DFS 진행
+        newNode.right = invertTree(root.left);
+        
+        // 추가한 신규 노드 반환
+        return newNode;
     }
 }
