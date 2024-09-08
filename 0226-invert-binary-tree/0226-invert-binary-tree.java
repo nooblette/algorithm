@@ -15,21 +15,35 @@
  */
 class Solution {
     public TreeNode invertTree(TreeNode root) {
-        // 빈 노드에 도달하면 null 반환
+        // 예외 처리
         if(root == null) {
             return null;
         }
         
-        // 왼쪽 자식 노드 dfs
-        invertTree(root.left);
+        // 반복 DFS를 위한 스택 선언
+        Deque<TreeNode> stack = new ArrayDeque<>();
         
-        // 오른쪽 자식 노드 dfs
-        invertTree(root.right);
+        // 스택에 루트부터 삽입
+        stack.add(root);
         
-        // 왼쪽/오른쪽 자식 노드 스왑
-        TreeNode tmp = root.left;
-        root.left = root.right;
-        root.right = tmp;
+        while(!stack.isEmpty()) {
+            TreeNode node = stack.pop();
+            
+            // 왼쪽/오른쪽 노드 스왑
+            TreeNode tmp = node.left;
+            node.left = node.right;
+            node.right = tmp;
+            
+            // 스택에 왼쪽 노드 추가
+            if(node.left != null) {
+                stack.add(node.left);
+            }
+            
+            // 스택에 오른쪽 노드 추가
+            if(node.right != null) {
+                stack.add(node.right);
+            }
+        }
         
         return root;
     }
