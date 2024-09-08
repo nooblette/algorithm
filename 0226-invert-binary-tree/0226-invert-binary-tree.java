@@ -21,13 +21,13 @@ class Solution {
         }
         
         // 반복 DFS를 위한 스택 선언
-        Deque<TreeNode> stack = new ArrayDeque<>();
+        Queue<TreeNode> queue = new LinkedList<>();
         
         // 스택에 루트부터 삽입
-        stack.add(root);
+        queue.add(root);
         
-        while(!stack.isEmpty()) {
-            TreeNode node = stack.pop();
+        while(!queue.isEmpty()) {
+            TreeNode node = queue.poll();
             
             // 왼쪽/오른쪽 노드 스왑
             TreeNode tmp = node.left;
@@ -36,12 +36,12 @@ class Solution {
             
             // 스택에 왼쪽 노드 추가
             if(node.left != null) {
-                stack.add(node.left);
+                queue.add(node.left);
             }
             
             // 스택에 오른쪽 노드 추가
             if(node.right != null) {
-                stack.add(node.right);
+                queue.add(node.right);
             }
         }
         
