@@ -14,35 +14,26 @@
  * }
  */
 class Solution {
-    private int getHeight(TreeNode node) {
-        // 예외 처리
+    public int dfs(TreeNode node) {
+        // 리프 노드에 도달하면 left와 right는 0을 반환한다.
         if(node == null) {
             return 0;
         }
-        
-        // 왼쪽 서브 트리의 높이 반환
-        int leftHeight = getHeight(node.left);      
-        if(leftHeight == -1) {
-            // 왼쪽 서브 트리의 균형이 이미 깨진 경우
+
+        // 왼쪽과 오른쪽 자식의 높이를 반환한다.
+        int left = dfs(node.left);
+        int right = dfs(node.right);
+
+        // 각 자식의 균형이 이미 깨져있거나, 높이차가 1보다 크다면 균형이 깨졌다는 의미로 -1을 반환한다.
+        if(left == -1 || right == -1 || Math.abs(left - right) > 1) {
             return -1;
         }
-        
-        // 오른쪽 서브 트리의 높이 반환
-        int rightHeight = getHeight(node.right);      
-        if(rightHeight == -1) {
-            // 오른쪽 서브 트리의 균형이 이미 깨진 경우
-            return -1;
-        }
-        
-        // 두 서브 트리의 높이 차이가 1보다 크다면 -1 반환(균형이 깨진 경우)
-        if(Math.abs(leftHeight - rightHeight) > 1) {
-            return -1;
-        }
-        
-        return Math.max(leftHeight, rightHeight) + 1;
+
+        // 현재 노드의 높이를 반환한다.
+        return Math.max(left, right) + 1;
     }
-    
+
     public boolean isBalanced(TreeNode root) {
-        return getHeight(root) == -1 ? false : true;        
+        return dfs(root) != -1;
     }
 }
