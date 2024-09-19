@@ -13,29 +13,25 @@
  *     }
  * }
  */
-class Solution {    
-    int sum = 0;
+class Solution {
     public int rangeSumBST(TreeNode root, int low, int high) {
+        // 예외 처리
         if(root == null) {
             return 0;
         }
         
-        // low가 root보다 크다면 root는 root의 오른쪽 자식으로 갱신
-        if(low > root.val) {
-            rangeSumBST(root.right, low, high);
+        // 결과 변수
+        int result = 0;
+        
+        // 현재 노드의 값이 low와 high 사이에 있다면 결과에 추가
+        if(root.val >= low && root.val <= high) {
+            result += root.val;
         }
         
-        // high가 root보다 작다면 root를 root의 왼쪽 자식으로 갱신
-        else if(high < root.val) {
-            rangeSumBST(root.left, low, high);
-        }
+        // 재귀 DFS
+        result += rangeSumBST(root.left, low, high);
+        result += rangeSumBST(root.right, low, high);
         
-        // low ≤ root ≤ high가 되면 아래 과정 진행
-        else {
-            sum += root.val;
-            rangeSumBST(root.left, low, high);
-            rangeSumBST(root.right, low, high);
-        }
-        return sum;
+        return result;
     }
 }
