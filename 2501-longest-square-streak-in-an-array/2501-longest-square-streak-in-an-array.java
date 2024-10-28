@@ -5,22 +5,22 @@ class Solution {
         Arrays.sort(nums);
         
         // Set 자료구조를 통해 탐색을 효율적으로 개선한다. (원소 조회와 제거가 O(1))
-        Set<Integer> numSet = new HashSet<>();
+        Set<Long> numSet = new HashSet<>();
         for(int num : nums) {
-            numSet.add(num);
+            numSet.add((long) num);
         }
         
         for(int num : nums) {
             // 이미 사용한 숫자는 넘어간다.
-            if(!numSet.contains(num)) {
+            if(!numSet.contains((long) num)) {
                 continue;
             }
             
             int len = 1;
-            int current = num;
+            long current = num;
             
             // Set을 탐색하며 제곱수를 찾는다.
-             while (current <= Math.sqrt(Integer.MAX_VALUE) && numSet.contains(current * current)) {
+            while(numSet.contains(current * current)) {
                 // current 갱신
                 current = current * current;
                 
