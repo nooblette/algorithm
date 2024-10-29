@@ -1,7 +1,10 @@
 class Solution {
     int[][] heads = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
     
-    private void dfs(int rows, int cols, int cury, int curx, List<List<Integer>> path, int[][] heights) {
+    private void dfs(int rows, int cols, int cury, int curx, boolean[][] visited, int[][] heights) {
+        // 방문 경로에 추가
+        visited[cury][curx] = true;
+        
         // 도달할 수 있는 좌표 목록 탐색
         for(int[] head : heads) {
             int newy = cury + head[0];
@@ -18,15 +21,12 @@ class Solution {
             }
                 
             // 이미 방문한 노드는 방문 불가
-            if(path.contains(List.of(newy, newx))) {
+            if(visited[newy][newx]) {
                 continue;
-            }
-                
-            // 방문 경로에 추가
-            path.add(List.of(newy, newx));
+            } 
             
             // 새로운 노드에 대해 dfs 탐색
-            dfs(rows, cols, newy, newx, path, heights);
+            dfs(rows, cols, newy, newx, visited, heights);
         } 
     }
     
@@ -34,58 +34,36 @@ class Solution {
         int rows = heights.length;
         int cols = heights[0].length;
         
-        // 초기화
-        List<List<Integer>> defaultPacificList = new ArrayList<>();
-        List<List<Integer>> pacificList = new ArrayList<>();
+        // 방문 경로 저장
+        boolean[][] pacificVisited = new boolean[rows][cols];
+        boolean[][] atlanticVisited = new boolean[rows][cols];
+        
         for(int j = 0; j < cols; j++) {
-            defaultPacificList.add(List.of(0, j));
-            pacificList.add(List.of(0, j));
+            // 태평양 도달 가능 위치에 대해 dfs 탐색
+            dfs(rows, cols, 0, j, pacificVisited, heights);
+            
+            // 대서양 도달 가능 위치에 대해 dfs 탐색
+            dfs(rows, cols, rows-1, j, atlanticVisited, heights);
         }
     
         for(int i = 0; i < rows; i++) {
-            defaultPacificList.add(List.of(i, 0));
-            pacificList.add(List.of(i, 0));
-        }
-        
-        // pacific에 도달할 수 있는 좌표 목록
-        for(List<Integer> pacific : defaultPacificList) {
-            // 현재 좌표
-            int cury = pacific.get(0);
-            int curx = pacific.get(1);
+             // 태평양 도달 가능 위치에 대해 dfs 탐색
+            dfs(rows, cols, i, 0, pacificVisited, heights);
             
-            dfs(rows, cols, cury, curx, pacificList, heights);
-        }
-        
-        // 초기화
-        List<List<Integer>> defaultAtlanticList = new ArrayList<>();
-        List<List<Integer>> atlanticList = new ArrayList<>();
-        for(int j = 0; j < cols; j++) {
-            defaultAtlanticList.add(List.of(rows-1, j));
-            atlanticList.add(List.of(rows-1, j));
-        }
-    
-        for(int i = 0; i < rows; i++) {
-            defaultAtlanticList.add(List.of(i, cols-1));
-            atlanticList.add(List.of(i, cols-1));
-        }
-        
-        // atlantic 도달할 수 있는 좌표 목록
-        for(List<Integer> atlantic : defaultAtlanticList) {
-            // 현재 좌표
-            int cury = atlantic.get(0);
-            int curx = atlantic.get(1);
-            
-            dfs(rows, cols, cury, curx, atlanticList, heights);
+            // 대서양 도달 가능 위치에 대해 dfs 탐색
+            dfs(rows, cols, i, cols-1, atlanticVisited, heights);
         }
         
         // 두 바다에 도달할 수 있는 공통 원소 탐색
-        Set<List<Integer>> answer = new HashSet<>();
-        for(List<Integer> pacific : pacificList) {
-            if(atlanticList.contains(pacific)) {
-                answer.add(pacific);
+        List<List<Integer>> answer = new ArrayList<>();
+        for(int i = 0; i < rows; i++) {
+            for(int j = 0; j < cols; j++) {
+                if(pacificVisited[i][j] && atlanticVisited[i][j]) {
+                    answer.add(List.of(i, j));
+                }
             }
         }
         
-        return new ArrayList<>(answer);
+        return answer;
     }
 }
