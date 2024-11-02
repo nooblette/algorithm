@@ -1,34 +1,37 @@
 class Solution {
     public List<List<Integer>> fourSum(int[] nums, int target) {
-        int n = nums.length;
+        // 중복 방지를 위해 Set으로 선언
+        Set<List<Integer>> answer = new HashSet<>();
         
-        // 탐색 전 정렬 수행 - target과 일치하는 원소 탐색을 효율적으로 하기 위함
+        // 주어진 배열을 정렬
         Arrays.sort(nums);
         
-        Set<List<Integer>> answer = new HashSet<>();
-        for(int i = 0; i < n; i++) {
-            for(int j = i + 1; j < n; j++) {
-                // 투 포인터 left, rigt 선언
+        // i번째 인덱스와 i+1번째 인덱스는 고정
+        for(int i = 0; i < nums.length - 3; i++) {
+            for(int j = i + 1; j < nums.length - 2; j++) {
+                // 이 후 원소에 대해 포인터를 옮겨가며 탐색
                 int left = j + 1;
-                int right = n - 1;
+                int right = nums.length - 1;
                 
-                // 두 포인터가 서로 엇갈리기 전까지
-                while(left < right) {
-                    // 4개의 합이 target 보다 작다면 left를 우측(원소 합이 증가하는 방향)으로 이동한다.
-                    if(target > (long) nums[i] + nums[j] + nums[left] + nums[right]) {
+                while(left < right && right < nums.length) {
+                    // 4개의 원소의 합이 target 보다 작은 경우
+                    if((long) nums[i] + nums[j] + nums[left] + nums[right] < target) {
+                        // left를 한 칸 우측으로 이동한다 (합이 증가하는 방향)
                         left += 1;
-                    } else if (target < (long) nums[i] + nums[j] + nums[left] + nums[right]) {
-                        // 4개의 합이 target 보다 크다면 right를 좌측(원소 합이 감소하는 방향)으로 이동한다.
+                    } else if((long) nums[i] + nums[j] + nums[left] + nums[right] > target) {
+                        // 4개의 원소의 합이 target 보다 큰 경우
+                        // right를 한 칸 좌측으로 이동한다 (합이 감소하는 방향)
                         right -= 1;
                     } else {
-                        // 4개의 합이 target과 같은 경우(정답을 찾은 경우) 정답 배열에 추가한다.
+                        // 4개의 원소의 합이 target이 되는 경우
                         answer.add(List.of(nums[i], nums[j], nums[left], nums[right]));
                         
-                        // 다시 탐색 진행
+                        // left는 우측으로, right는 좌측으로 이동 (두 포인터를 모두 이동)
                         left += 1;
                         right -= 1;
-                    }
+                    } 
                 }
+                
             }
         }
         
