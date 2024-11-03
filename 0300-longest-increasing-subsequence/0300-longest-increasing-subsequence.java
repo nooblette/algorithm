@@ -2,28 +2,28 @@ class Solution {
     public int lengthOfLIS(int[] nums) {
         int n = nums.length;
         
-        // `dp[i]`는 0부터 i까지의 부분 수열 중 최장 길이를 저장한다.
-        int[] dp = new int[n];
+        // 증가하는 부분 수열 값을 저장할 배열
+        List<Integer> LIS = new ArrayList<>();
         
-        // dp 초기화
-        Arrays.fill(dp, 1);
-        
-        int answer = 1;
-        for(int i = 1; i < n; i++) {
-            // dp[i]는 이전 loop에서 구한 dp[0] ~ dp[i-1] 값을 이용하여 구한다.
-            for(int j = 0; j < i; j++) {
-                
-                // 0 <= j < i이므로, 증가하는 부분 수열을 찾은 경우
-                if(nums[j] < nums[i]) {
-                    // 이전에 구한 dp[j]를 이용하여 갱신한다.
-                    dp[i] = Math.max(dp[i], dp[j] + 1);
-                }
+        for(int num : nums) {
+            // `binarySearch()` : 특정 원소의 인덱스를 반환한다.
+            // 만약 리스트에 해당 원소가 없다면, 리스트에 추가했을때 정렬이 유지되는 인덱스 + 1한 값을 음수로 반환한다.
+            int pos = Collections.binarySearch(LIS, num);
+            
+            if(pos < 0) {
+                // 이분탐색을 이용하여 저장 위치 탐색
+                pos = -(pos + 1);
             }
             
-            // 결과값 갱신
-            answer = Math.max(answer, dp[i]);
+            // 증가하는 부분 수열을 유지하는 경우 - 리스트 가장 뒤에 추가한다.
+            if(pos == LIS.size()) {
+                LIS.add(num);
+            } else {
+                // 증가하는 부분 수열을 유지할 수 없는 경우 - 부분 수열을 유주힐 수 있도록 리스트의 원소를 변경한다.
+                LIS.set(pos, num);
+            }
         }
         
-        return answer;
+        return LIS.size();
     }
 }
