@@ -24,7 +24,7 @@ class Solution {
             int len = Math.max(lenOdd, lenEven);
             
             // 최장 길이를 갱신하는 경우
-            if(len > end - start) {
+            if(len > end - start + 1) {
                 // i를 중심으로 (len-1)/2만큼 좌측으로 이동하면 시작 지점
                 // 팰린드롬의 길이가 짝수인 경우를 위해 한쪽으로 쏠리므로 -1을 빼준다.
                 start = i - (len-1)/2;
