@@ -1,38 +1,30 @@
 class Solution {
-    public String longestPalindrome(String s) {    
-        int start = 0; // 가장 긴 팰린드롬이 시작하는 인덱스
-        int maxLen = 0; // 가장 긴 팰린드롬의 길이
+    private boolean isPalindrome(int left, int right, String s) {
+        while(left < right && s.charAt(left) == s.charAt(right)) {
+            left += 1;
+            right -= 1;
+        }
+        
+        return left >= right;
+    }
+    
+    public String longestPalindrome(String s) {
+        String answer = "";
+        int len = 0;
         
         for(int i = 0; i < s.length(); i++) {
-            // 길이가 홀수인 팰린드롬의 길이
-            int oddLen = expandAroundCenter(s, i, i);
-            
-            // 길이가 짝수인 팰린드롬의 길이
-            int evenLen = expandAroundCenter(s, i, i+1);
-            
-            int len = oddLen > evenLen ? oddLen : evenLen;
-            
-            // 새로운 팰린드롬의 길이와 시작 인덱스 계산
-            if(len > maxLen) {
-                maxLen = len;
-                
-                // (maxLen-1) / 2 : 전체 팰린드롬 길이에서 중앙에 있는 문자를 제외(= maxLen-1)하고 한쪽에 있는 문자의 개수(= /2)를 계산
-                start = i - (maxLen-1) / 2;
+            for(int j = i; j < s.length(); j++) {
+                // 두 문자가 동일하다면, 둘 사이 문자에 대해 팰린드롬이 맞는지 체크
+                if(s.charAt(i) == s.charAt(j) && isPalindrome(i, j, s)) {
+                    // 팰린드롬이 맞고 더 길이가 길다면 갱신
+                    if(len < j - i + 1) {
+                        answer = s.substring(i, j + 1);
+                        len = j - i + 1;
+                    }
+                }
             }
         }
         
-        return s.substring(start, start + maxLen);
-    }
-    
-    // 팰린드롬의 길이 반환
-    private int expandAroundCenter(String s, int left, int right) {
-        while(left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)) {
-            left--;
-            right++;
-        }
-        
-        
-        // 팰린드롬의 길이(한 칸씩 이동하기 전의 left와 right에 대한 길이를 계산) 반환
-        return right - left - 1;
+        return answer;
     }
 }
