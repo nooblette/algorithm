@@ -1,27 +1,31 @@
 class Solution {
     public int lengthOfLongestSubstring(String s) {
-        Map<Character, Integer> used = new HashMap<>();
-        int maxLength = 0;
-        int left = 0, right = 0;
+        // 슬라이딩 윈도우를 적용하기 위한 시작 인덱스
+        int start = 0;
         
-        // 문자열을 문자 단위로 반복
-        for(char c : s.toCharArray()) {
-            // 중복 검증
-            if(used.containsKey(c) && left <= used.get(c)) {
-                // 이미 등장한 문자인 경우
-                left = used.get(c) + 1;
-            } else {
-                // 새로 등장한 문자인 경우
-                maxLength = Math.max(maxLength, right - left + 1);
-            }
-
-            // 현재 문자와 등장한 인덱스 추가
-            used.put(c, right);
+        // key : 특정 문자, value : 해당 문자가 등장한 인덱스
+        Map<Character, Integer> map = new HashMap<>();
+        
+        // 최대 길이
+        int answer = 0;
+        
+        // end : 슬라이딩 윈도우 범위의 종료 인덱스
+        for(int end = 0; end < s.length(); end++) {
+            Character curChar = s.charAt(end);
             
-            // 다음 인덱스 순회
-            right++;
+            // 현재 문자가 이미 등장한 문자이고, 그 위치가 start거나 start 이후라면
+            while(map.containsKey(curChar) && map.get(curChar) >= start) {
+                // start 위치를 1 증가한다. (중복 제거)
+                start += 1;
+            }
+            
+            // map에 등장한 문자와 등장 위치 추가
+            map.put(curChar, end);
+            
+            // 정답 길이 갱신
+            answer = Math.max(answer, end - start + 1);
         }
         
-        return maxLength;
+        return answer;
     }
 }
