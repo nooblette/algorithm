@@ -1,36 +1,47 @@
 class Solution {
-    private void dfs(int i, int j, char[][] grid) {
-        if(i < 0 || i >= grid.length || j < 0 || j >= grid[0].length || grid[i][j] == '0') {
-            return;
+    int[][] heads = {{0, 1}, {0, -1}, {-1, 0}, {1, 0}};
+    
+    private int dfs(int m, int n, int y, int x, boolean[][] visited, char[][] grid) {
+        if(y < 0 || x < 0 || y >= m || x >= n) {
+            return 0;
         }
-
-        // 이미 방문한 곳을 마킹
-        grid[i][j] = '0';
-
-        // 동서남북 탐색
-        dfs(i, j+1, grid);
-        dfs(i, j-1, grid);
-        dfs(i+1, j, grid);
-        dfs(i-1, j, grid);
-    }
-           
-    public int numIslands(char[][] grid) {
-        int count = 0;
         
-        // grid 탐색
-        for(int i = 0; i < grid.length; i++) {
-            for(int j = 0; j < grid[0].length; j++) {
-                // 육지인 경우
-                if(grid[i][j] == '1') {
-                    dfs(i, j, grid);
-                    
-                    // dfs 탐색이 모두 끝나면 섬 하나가 완성되므로 카운트 증가
-                    count++;
+        if(visited[y][x]) {
+            return 0;
+        }
+        
+        if(grid[y][x] == '0') {
+            return 0;
+        }
+        
+        visited[y][x] = true;
+        int answer = 1;
+        for(int[] head : heads) {
+            int newy = y + head[0];
+            int newx = x + head[1];
+            
+            answer += dfs(m, n, newy, newx, visited, grid);
+        }
+        
+        return answer;
+    }
+    
+    public int numIslands(char[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+        
+        // 방문 경로를 저장하기 위한 배열
+        boolean[][] visited = new boolean[m][n];
+        
+        int count = 0;
+        for(int i = 0; i < m; i++) {
+            for(int j = 0; j < n; j++) {
+                if(dfs(m, n, i, j, visited, grid) > 0) {
+                    count += 1;
                 }
             }
         }
         
-        // 섬의 개수 반환
         return count;
     }
 }
