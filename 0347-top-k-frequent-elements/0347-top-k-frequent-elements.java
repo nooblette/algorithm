@@ -1,26 +1,26 @@
 class Solution {
     public int[] topKFrequent(int[] nums, int k) {
-        // 각 엘리먼트 별로 등장 빈도를 저장
-        Map<Integer, Integer> frequencyMap = new HashMap<>();
+        // 원소별로 등장 횟수를 저장
+        Map<Integer, Integer> map = new HashMap<>();
+
         for(int num : nums) {
-            frequencyMap.put(num, frequencyMap.getOrDefault(num, 0) + 1);
+            map.put(num, map.getOrDefault(num, 0) + 1);
         }
         
-        // 빈도순으로 정렬되는 우선순위 큐 선언
-        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> b[1] - a[1]);
-
-        // 우선순위 큐에 각 엘리먼트와 빈도 수 삽입
-        for(int elem : frequencyMap.keySet()) {
-            pq.add(new int[]{elem, frequencyMap.get(elem)});
+        // map을 등장 횟수를 기준으로 내림차순 정렬하는 우선순위 큐 변환
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> Integer.compare(b[1], a[1]));
+        
+        // map을 우선순위 큐로 변환
+        for(int key : map.keySet()) {
+            pq.add(new int[]{key, map.get(key)});
         }
         
-        int[] result = new int[k];
-
         // k번까지만 우선순위 큐에서 원소를 추출한다.
+        int[] answer = new int[k];
         for(int i = 0; i < k; i++) {
-            result[i] = pq.poll()[0];
+            answer[i] = pq.poll()[0];
         }
-
-        return result;
+        
+        return answer;
     }
 }
