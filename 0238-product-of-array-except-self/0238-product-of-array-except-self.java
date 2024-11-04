@@ -1,24 +1,26 @@
 class Solution {
     public int[] productExceptSelf(int[] nums) {
-        int[] result = new int[nums.length];
+        int n = nums.length;
         
-        int p = 1;
-        for(int i = 0; i < nums.length; i++) {
-            result[i] = p;
-            
-            // p는 0번 부터 i-1번까지의 곱셈 결과를 누적하여 갖고한다.
-            p *= nums[i];
+        // 왼쪽에서 오른쪽으로 이동하면서 원소들의 곱한 결과 값을 저장
+        int[] left = new int[n];
+        left[0] = 1;
+        for(int i = 1; i < n; i++) {
+            left[i] = left[i-1] * nums[i-1]; 
         }
         
-        // 오른쪽 곱셈, 왼쪽 곱셈 결과에 차례대로 곱한다.
-        p = 1;
-        for(int i = nums.length - 1; i >= 0; i--) {
-            result[i] *= p;
-            
-            // p는 n번 부터 i+1번까지의 곱셈 결과를 누적하여 갖고있다.
-            p *= nums[i];
+        // 오른쪽에서 왼쪽으로 이동하면서 원소들의 곱한 결과 값을 저장
+        int[] right = new int[n];
+        right[n-1] = 1;
+        for(int i = n-2; i >= 0; i--) {
+            right[i] = right[i+1] * nums[i+1];
         }
         
-        return result;
+        // 두 배열을 곱한 결과를 반환한다.
+        int[] answer = new int[n];
+        for(int i = 0; i < n; i++) {
+            answer[i] = left[i] * right[i];
+        }
+        return answer;
     }
 }
