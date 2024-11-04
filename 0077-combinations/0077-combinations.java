@@ -6,11 +6,7 @@ class Solution {
         }
         
         for(int num : nums) {
-            if(num < start) {
-                continue;
-            }
-            
-            if(!path.contains(num)) {
+            if(num > start) {
                 path.add(num);
                 dfs(nums, path, answer, k, num);
                 path.remove(Integer.valueOf(num));
