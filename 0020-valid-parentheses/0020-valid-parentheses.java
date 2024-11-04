@@ -1,25 +1,21 @@
 class Solution {
     public boolean isValid(String s) {
         Deque<Character> stack = new ArrayDeque<>();
-        Map<Character, Character> table = new HashMap<>();
-        table.put(')', '(');
-        table.put(']', '[');
-        table.put('}', '{');
+        Map<Character, Character> parentheses = Map.of('(', ')', '[', ']', '{', '}');
         
-        // 문자열을 문자 단위로 반복
-        for(int i = 0; i < s.length(); i++){
-            // 닫힘 괄호가 아닌 경우 스택에 푸시
-            if(!table.containsKey(s.charAt(i))) {
-                stack.push(s.charAt(i));
-            }
-            
-            // 중간에 스택이 비거나 팝 결과가 닫힘 괄호인경우 실패
-            else if(stack.isEmpty() || table.get(s.charAt(i)) != stack.pop()) {
-                return false;
+        for(char c : s.toCharArray()) {
+            // 여는 괄호라면 닫힌 괄호를 스택에 추가
+            if(parentheses.containsKey(c)) {
+                stack.push(parentheses.get(c));
+            } else {
+                // 중간에 스택이 비거나 가장 위에 값과 다르다면 짝이 맞지 않음
+                if(stack.isEmpty() || stack.pop() != c) {
+                    return false;
+                }
             }
         }
         
-        // 유효한 입력이라면 반복 완료 후 스택이 비어야 한다.
-        return stack.size() == 0;
+        // 스택이 비어있다면 짝지어진 괄호
+        return stack.isEmpty();
     }
 }
