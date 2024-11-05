@@ -12,6 +12,8 @@ class Solution {
         // 길이 1인 부분 문자열은 모두 팰린드롬
         for (int i = 0; i < n; i++) {
             dp[i][i] = true;
+            start = i;
+            maxLen = 1;
         }
         
         // 길이 2인 부분 문자열 초기화
