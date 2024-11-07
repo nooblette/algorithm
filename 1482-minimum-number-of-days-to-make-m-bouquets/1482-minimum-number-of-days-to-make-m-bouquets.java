@@ -48,7 +48,7 @@ class Solution {
             }
         }
         
-        // 최대 일자보다 커진 경우 부케를 m -1을 반환한다.
+        // 최대 일자보다 커진 경우 -1을 반환한다.
         return answer == Integer.MAX_VALUE ? -1 : answer;
     }
 }
