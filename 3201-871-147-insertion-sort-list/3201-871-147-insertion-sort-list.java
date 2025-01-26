@@ -32,8 +32,11 @@ class Solution {
             // head 갱신
             head = headNext;
 
-            // 정렬된 연결 리스트의 위치 탐색을 위해 포인터를 다시 맨 앞으로 이동
-            p = parent;
+            // 정렬된 연결 리스트의 포인터(p)의 값보다 다음번 위치를 찾을 노드의 값이 작을 때만 포인터를 맨 앞으로 이동한다.
+            // 즉 삽입 위치 탐색이 필요한 경우에만 포인터를 맨 앞으로 되돌아간다.
+            if(head != null && p.val > head.val) {
+						p = parent;
+					}
         }
         
         return parent.next;
