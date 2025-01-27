@@ -4,7 +4,7 @@ class Solution {
         if(left > right) return -1;
         
         // 중앙 값 계산
-        int mid = (left + right) / 2;
+        int mid = left + (right - left) / 2;
         
         // 만약 target이 중앙 값보다 작다면 왼쪽 범위 탐색
         if(target < nums[mid]) {
