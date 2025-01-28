@@ -3,12 +3,11 @@ class Solution {
         // 결과 변수로 중복을 허용하지 않는 집합 자료형 선언
         Set<Integer> result = new HashSet<>();
         
-        // 두 집합 탐색
+        // 이진 검색으로 탐색
+        Arrays.sort(nums2);
         for(int num1 : nums1) {
-            for(int num2 : nums2) {
-                if(num1 == num2) {
-                    result.add(num1);
-                }
+            if(Arrays.binarySearch(nums2, num1) >= 0) {
+                result.add(num1);
             }
         }
         
