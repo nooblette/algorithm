@@ -1,13 +1,20 @@
 class Solution {
     public int maxSubArray(int[] nums) {
+        // 매 순간 최적해를 저장
+        int currentSum = 0;
         
-        // 이전 값을 메모이제이션
-        for(int i = 1; i < nums.length; i++) {
-            // 이전까지의 합이 0보다 크면 누적 합산
-            int prev = nums[i - 1];
-            nums[i] = nums[i] + (prev > 0 ? prev : 0); 
+        // 매 순간 최적해를 누적
+        int bestSum = Integer.MIN_VALUE;
+        
+        for(int num : nums) {
+            // 매 순간 최적해 계산
+            currentSum = Math.max(num, currentSum + num);
+            
+            // 최댓값 갱신
+            bestSum = Math.max(bestSum, currentSum);
         }
         
-        return Arrays.stream(nums).max().getAsInt();
+        
+        return bestSum;
     }
 }
