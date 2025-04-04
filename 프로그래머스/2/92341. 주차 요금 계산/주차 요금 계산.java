@@ -1,96 +1,63 @@
 import java.util.*;
-import java.util.stream.Collectors;
-
 
 class Solution {
     public int[] solution(int[] fees, String[] records) {
-        int defaultTime = fees[0];
-        int defaultFee = fees[1];
-        int unitTime = fees[2];
-        int unitFee = fees[3];
-        
-        String[] parkingLot = new String[10000]; // 주차장
-        Arrays.fill(parkingLot, "x");
-        
-        Map<String, Integer> totalParkingTime = new HashMap<>(); // 차량별 누적 주차 시간
-        for(String record : records){
-            String[] infos = record.split(" ");
-            String time = infos[0];
-            String carNumber = infos[1];
+        // 차량별 출입 내역을 관리
+        Map<String, Integer> parkingLogs = new HashMap<>();
 
-            if("IN".equals(infos[2])){
-                parkingLot[Integer.parseInt(carNumber)] = time;
-            } else if("OUT".equals(infos[2])){
-                String inTime = parkingLot[Integer.parseInt(carNumber)];
-                String[] inHourAndMinute = inTime.split(":");
-                String[] outHourAndMinute = time.split(":");
-                
-                // 누적 주차 시간(분) 계산
-                int diffHour = Integer.parseInt(outHourAndMinute[0]) - Integer.parseInt(inHourAndMinute[0]);
-                int diffMinute = Integer.parseInt(outHourAndMinute[1]) - Integer.parseInt(inHourAndMinute[1]);
-                if(diffMinute < 0) {
-                    diffHour -= 1;
-                    diffMinute = 60 + diffMinute;
-                }
-                int accumParkingTime = diffHour * 60 + diffMinute;
-                
-               
-                int count = accumParkingTime;
-                if(totalParkingTime.containsKey(carNumber)){
-                    count += totalParkingTime.get(carNumber);
-                }
-                totalParkingTime.put(carNumber, count); // 누적 주차 시간 저장
-                
-                // 출차했으므로 차량의 입출차 기록을 초기화
-                parkingLot[Integer.parseInt(carNumber)] = "x";
+        // 차랑별 누적 주차 시간을 보관
+        Map<String, Integer> parkingTimes = new HashMap<>();
+        
+        // 차량별 누적 주차 시간 계산
+        for(String record : records) {
+            String[] log = record.split(" ");
+
+            // 시간 기록 추출
+            String[] time = log[0].split(":");
+
+            // 입차 기록인 경우
+            if("IN".equals(log[2])) {
+                // parkingLogs에 입차 기록 추가
+                parkingLogs.put(log[1], Integer.parseInt(time[0]) * 60 + Integer.parseInt(time[1]));
+            } else if("OUT".equals(log[2])) {
+                // 출차 기록인 경우
+                // parkingLogs에서 입차한 시간을 꺼내고 누적 주차 시간을 계산
+                int elapsedTime = Integer.parseInt(time[0]) * 60 + Integer.parseInt(time[1]) - parkingLogs.get(log[1]);
+
+                // 누적 주차 시간 적재
+                parkingTimes.put(log[1], parkingTimes.getOrDefault(log[1], 0) + elapsedTime);
+
+                // parkingLogs에 입차 기록 제거
+                parkingLogs.remove(log[1]);
+            }
+        }
+            
+        // 23:59 출차 처리
+        for(Map.Entry<String, Integer> parkingLog : parkingLogs.entrySet()) {
+            parkingTimes.put(parkingLog.getKey(), parkingTimes.getOrDefault(parkingLog.getKey(), 0) + 23 * 60 + 59 - parkingLog.getValue());
+        }
+            
+        // 차량번호 기준으로 정렬
+        // 누적 주차 시간에서 Key(차량 번호)를 기준으로 오름차순 정렬한다.
+        List<String> parkingTimesByKey = new ArrayList<>(parkingTimes.keySet());
+        parkingTimesByKey.sort(Comparator.comparingInt(Integer::parseInt));
+            
+        // 차량별 누적 금액 추출
+        int[] answer = new int[parkingTimesByKey.size()];
+
+        // 정렬된 차량번호 목록을 순회
+        int i = 0;
+        for(String k : parkingTimesByKey) {
+            // 차량 번호마다 누적 주차 시간 추출
+
+            // 기본 시간보다 적은 경우
+            if(parkingTimes.get(k) < fees[0]) {
+                answer[i++] = fees[1];
+             } else {
+                answer[i++] = fees[1] + (int) Math.ceil((parkingTimes.get(k) - fees[0]) / (double) fees[2]) * fees[3];
             }
         }
         
-        // OUT 하지 않은 차량 처리
-        for(int i = 0; i < parkingLot.length; i++){
-            String inParkingTime = parkingLot[i];
-            
-            if("x".equals(inParkingTime)) {
-                continue;                
-            }
-            
-            // 누적 주차 시간(분) 계산
-            String[] inHourAndMinute = inParkingTime.split(":");
-            
-            int diffHour = 23 - Integer.parseInt(inHourAndMinute[0]);
-            int diffMinute = 59 - Integer.parseInt(inHourAndMinute[1]);
-            
-            int accumParkingTime = diffHour * 60 + diffMinute;
-            String carNumber = String.format("%04d", i);
-            
-            int count = accumParkingTime;
-            if(totalParkingTime.containsKey(carNumber)){
-                count += totalParkingTime.get(carNumber);
-            }
-            totalParkingTime.put(carNumber, count); // 누적 주차 시간 저장
-        }
-       
-        // 주차 요금 계산
-        Map<String, Integer> carNumberAndTotalFee = new HashMap<>();
-        for(Map.Entry<String, Integer> carNumberAndTime: totalParkingTime.entrySet()){
-            Integer time = carNumberAndTime.getValue();
-            String carNumber = carNumberAndTime.getKey();
-            if(time <= defaultTime) {
-                // 기본 시간 미만인 경우
-                carNumberAndTotalFee.put(carNumber, Integer.valueOf(defaultFee));
-                
-            } else {
-                // 기본 시간을 초과한 경우
-                int overTime = time - defaultTime;
-                double overFee = Math.ceil((double) overTime / (double) unitTime);
-                carNumberAndTotalFee.put(carNumber, Integer.valueOf((int)(defaultFee + overFee * unitFee)));
-            }
-        }
-        
-        Map<String, Integer> sortedByCarNumber = new TreeMap<>(carNumberAndTotalFee);
-        return sortedByCarNumber.values()
-            .stream()
-            .mapToInt(Integer::intValue)
-            .toArray();
+        return answer;
     }
 }
