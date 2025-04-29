@@ -42,9 +42,7 @@ interface Multiply {
 */
 public static Multiply helperFunction() {
     // Your code here
-    return (n) -> {
-        return n * 5;
-    };
+    return (n) -> n * 5;
     // Implement the multiplyBy5(int n) method using lambda expression. The implemented
     // function should return n*5
 }
