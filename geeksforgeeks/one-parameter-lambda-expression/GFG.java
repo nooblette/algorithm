@@ -40,20 +40,17 @@ interface Multiply {
     public int multiplyBy5(int n);
 }
 */
-public static class MyMultiply implements Multiply {
-    @Override
-    public int multiplyBy5(int n) {
-        return n * 5;
-    }
-}
-
 public static Multiply helperFunction() {
     // Your code here
-    return new MyMultiply();
+    return new Multiply() {
+        @Override
+        public int multiplyBy5(int n) {
+            return n * 5;
+        }
+    };
     // Implement the multiplyBy5(int n) method using lambda expression. The implemented
     // function should return n*5
 }
-
 
 //{ Driver Code Starts.
 
