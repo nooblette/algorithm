@@ -39,12 +39,7 @@ interface Hello {
 */
 public static Hello helperFunction() {
     // Your code here
-    return new Hello() {
-        @Override
-        public void sayHello() {
-            System.out.println("Hello");
-        }
-    };
+    return () -> System.out.println("Hello");
     // Implement sayHello using lambda expression and return the object.
     // Write this in the lambda expression: System.out.println("Hello")
 }
