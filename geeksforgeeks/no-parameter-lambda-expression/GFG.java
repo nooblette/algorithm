@@ -37,16 +37,14 @@ interface Hello {
     public void sayHello();
 }
 */
-public static class MyHello implements Hello {
-    @Override
-    public void sayHello() {
-        System.out.println("Hello");
-    }
-}
-
 public static Hello helperFunction() {
     // Your code here
-    return new MyHello();
+    return new Hello() {
+        @Override
+        public void sayHello() {
+            System.out.println("Hello");
+        }
+    };
     // Implement sayHello using lambda expression and return the object.
     // Write this in the lambda expression: System.out.println("Hello")
 }
