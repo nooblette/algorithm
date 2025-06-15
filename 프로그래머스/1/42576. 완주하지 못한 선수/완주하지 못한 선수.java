@@ -2,26 +2,30 @@ import java.util.*;
 
 class Solution {
     public String solution(String[] participant, String[] completion) {
-        // 참여 선수 이름 추가
-        Map<String, Integer> m = new HashMap<>();
-        for(String p : participant) {
-            m.put(p, m.getOrDefault(p, 0) + 1);
+        // 완주한 사람들 목록
+        Map<String, Integer> completionMap = new HashMap<>();
+        
+        // 완주한 사람들의 목록 이름과 갯수(동명이인) 초기화
+        for(String name : completion) {
+            int count = completionMap.getOrDefault(name, 0) + 1;
+            completionMap.put(name, count);
         }
         
-        // 완주한 선수 이름 제거
-        for(String c : completion) {
-            int left = m.get(c);
-            left -= 1;
-
-            // 값을 -1씩 업데이트하다가 0이되면 해시테이블에서 제거하도록 하였다.
-            if(left == 0) {
-                m.remove(c);
-            } else {
-                m.put(c, left);
+        for(String name : participant) {
+            // 완주한 사람 목록에 없다면 정답 반환
+            if(!completionMap.containsKey(name)) {
+                return name;
             }
+            
+            // 완주한 사람 목록에 있으나 등장 횟수가 0이라면 정답 반환
+            if(completionMap.get(name) == 0) {
+                return name;
+            }
+            
+            // 완주한 사람 목록에 있다면 카운트 감소
+            completionMap.put(name, completionMap.get(name) - 1);
         }
         
-        // 남아있는 유일한 키(이름) 반환
-        return m.entrySet().iterator().next().getKey();
+        return "";
     }
 }
