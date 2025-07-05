@@ -2,26 +2,26 @@ class Solution {
     public int[] productExceptSelf(int[] nums) {
         int n = nums.length;
 
-        // 좌측에서 우측, 우측에서 좌측으로 이동하며 원소들의 누적 곱을 저장하는 배열 선언
-        int[] left = new int[n + 1];
-        int[] right = new int[n + 1];
-
-        // left, right 배열 초기화
-        left[0] = 1;
-        for(int i = 1; i <= n; i++) {
-            left[i] = left[i-1] * nums[i-1];
-        }
-
-        right[n] = 1;
-        for(int i = n-1; i >= 0; i--) {
-            right[i] = right[i+1] * nums[i];
-        }
-
-        // 자기 자신(i)을 제외하고 좌측(left[0])에서 우측(left[i-1])의 누적 곱과 우측(right[n])에서 좌측(right[i+1])의 누적곱의 곱을 구한다.
         int[] answer = new int[n];
-        for(int i = 1; i <= n; i++) {
-            answer[i-1] = left[i-1] * right[i];
+
+        int p = 1;
+        answer[0] = 1;
+
+        // 주어진 배열을 좌측에서 우측으로 탐색
+        // 자기 자식보다 좌측에 있는 원소들의 곱을 저장한다.
+        for(int i = 1; i < n; i++) {
+            p *= nums[i-1];
+            answer[i] = p;
         }
+
+        // 주어진 배열을 우측에서 좌측으로 탐색
+        // 자기 자식보다 우측에 있는 원소들의 곱을 저장한다.
+        p = 1;
+        for(int i = n-2; i >= 0; i--) {
+            p *= nums[i+1];
+            answer[i] *= p;
+        }
+
         return answer;
     }
 }
