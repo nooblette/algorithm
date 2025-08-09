@@ -10,17 +10,22 @@ class Solution {
     }
 
     private int bottomUp(int start, int end, int[] nums) {
-        // i번째 집까지 훔쳤을 때 이익을 담는다.
-        int[] dp = new int[end + 1];
-        
+        // 직전 집을 훔치는 경우와 훔치지 않는 경우 별로 구한 이익 기록
+        int prev1 = 0;
+        int prev2 = 0;
+
         // 첫번째 집을 훔치는 경우와 아닌 경우별로 나누어 초기화
-        dp[1] = start == 0 ? nums[0] : 0;
+        prev1 = start == 0 ? nums[0] : 0;
 
         // dp[i] 계산, i번째 집을 훔치는 경우와 포기하는 경우 중 더 큰 값을 취한다.
         for(int i = 2; i <= end; i++) {
-            dp[i] = Math.max(dp[i-1], dp[i-2] + nums[i - 1]);
+            int val = Math.max(prev1, prev2 + nums[i - 1]);
+
+            // 이전 값 기록
+            prev2 = prev1;
+            prev1 = val;
         }
 
-        return dp[end];
+        return prev1;
     }
 }
