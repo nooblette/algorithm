@@ -1,41 +1,27 @@
 class Solution {
-    private Map<String, Integer> memo = new HashMap<>();
-
     public int numDecodings(String s) {
-        int end = s.length();
+        // 예외 처리
+        if(s.startsWith("0")) return 0;
 
-        return topDown(s, 0, end, 1) + topDown(s, 0, end, 2);
-    }
+        // 문자열 s의 특정 인덱스 i까지 디코딩 가능한 경우의 수
+        int[] dp = new int[s.length() + 1];
 
-    private int topDown(String s, int index, int end, int size) {
-        // 메모이제이션 키
-        String key = index + ":" + size;
-        if(memo.containsKey(key)) {
-            return memo.get(key);
+        dp[0] = 1;
+        dp[1] = 1;
+
+        for(int i = 2; i <= s.length(); i++) {
+            // 문자 하나를 선택했을 때 유효한 경우
+            if(s.charAt(i - 1) != '0') {
+                dp[i] = dp[i-1];
+            }
+
+            // 문자 두개를 선택했을 때 유효한 경우
+            int digit = Integer.parseInt(s.substring(i - 2, i));
+            if(digit >= 10 && digit <= 26) {
+                dp[i] += dp[i-2];
+            }
         }
 
-        // 범위 초과
-        if(index + size > end) {
-            memo.put(key, 0);    
-            return 0;
-        }
-
-        String str = s.substring(index, index + size);
-
-        // 디코딩 불가능한 케이스
-        if(str.startsWith("0") || (size == 2 && Integer.parseInt(str) > 26)) {
-            memo.put(key, 0);
-            return 0;
-        }
-
-        // 디코딩 성공
-        if(index + size == end) {
-            memo.put(key, 1);
-            return 1;
-        }
-
-        int result = topDown(s, index + size, end, 1) + topDown(s, index + size, end, 2);
-        memo.put(key, result);
-        return result;
+        return dp[s.length()];
     }
 }
