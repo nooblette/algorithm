@@ -20,28 +20,38 @@ class Node {
 
 class Solution {
     public Node cloneGraph(Node node) {
-        return dfs(node, new HashMap<Integer, Node>());
-    }
-
-    private Node dfs(Node node, Map<Integer, Node> visited) {
         if(node == null) {
-            return node;
+            return null;
         }
 
-        // 이미 방문한 노드인 경우
-        if(visited.containsKey(node.val)) {
-            // 복사한 노드를 반환한다.
-            return visited.get(node.val);
-        }
-
+        // 방문한 노드 저장
+        Map<Integer, Node> visited = new HashMap<>();
         Node copiedNode = new Node(node.val);
-
-        // 방문 기록 표시
         visited.put(node.val, copiedNode);
 
-        // 인접 노드 방문
-        for(Node neighbor : node.neighbors) {
-            copiedNode.neighbors.add(dfs(neighbor, visited));
+        // BFS
+        Deque<Node> queue = new ArrayDeque<>();
+        queue.offer(node);
+
+        while(!queue.isEmpty()) {
+            Node current = queue.poll();
+
+            // 인접 노드 탐색
+            for(Node neighbor : current.neighbors) {
+                
+                // 처음 방문하는 경우
+                if(!visited.containsKey(neighbor.val)) {
+                    Node copiedNeighbor = new Node(neighbor.val);
+
+                    // 방문 기록 저장
+                    visited.put(neighbor.val, copiedNeighbor);
+
+                    // 큐에 저장
+                    queue.offer(neighbor);
+                }
+                // 이웃 관계 설정
+                visited.get(current.val).neighbors.add(visited.get(neighbor.val));
+            }
         }
 
         return copiedNode;
