@@ -1,52 +1,51 @@
 class Solution {
     public boolean canFinish(int numCourses, int[][] prerequisites) {
-        // 인접 그래프 생성
+        // 인접 그래프(graph.get(i) = i번 강의를 선수강 조건으로 갖는 강의 목록)
         Map<Integer, List<Integer>> graph = new HashMap<>();
+
+        // 진입차수(선수강 강의 개수) 기록
+        int[] indegrees = new int[numCourses];
+
+        // 인접 그래프와 진입차수 초기화
         for(int[] prerequisite : prerequisites) {
+            // 인접 그래프 초기화
             List<Integer> preCourses = graph.getOrDefault(prerequisite[1], new ArrayList<>());
             preCourses.add(prerequisite[0]);
             graph.put(prerequisite[1], preCourses);
+
+            // 진입차수 증가
+            indegrees[prerequisite[0]]++;
         }
 
-        // 방문 기록 저장 - 0 : 미탐색, 1 : 탐색중, 2 : 탐색 완료
-        int[] visited = new int[numCourses];
-
-        // 그래프 탐색
-        for(int course = 0; course < numCourses; course++) {
-            if(!dfs(course, graph, visited)) {
-                return false;
+        Deque<Integer> queue = new ArrayDeque<>();
+        for(int i = 0; i < indegrees.length; i++) {
+            // 먼저 들을 수 있는(= 선수강 조건이 없는) 강의 먼저 수강한다.
+            if(indegrees[i] == 0) {
+                queue.offer(i);
             }
         }
 
-        return true;
-    }
+        // 수강한 강의 개수
+        int processed = 0;
+        while(!queue.isEmpty()) {
+            // i번 강의 수강 완료
+            int i = queue.poll();
+            processed++;
 
-    private boolean dfs(int index, Map<Integer, List<Integer>> graph, int[] visited) {
-        // 선행 조건이 없을 경우 강의 수강 가능
-        if(!graph.containsKey(index)) {
-            return true;
-        }
+            // 선수강 조건 중 i번 강의가 있는 강의에 진입차수를 1 감소한다.
+            if(graph.containsKey(i)) {
+                for(int course : graph.get(i)) {
+                    indegrees[course]--;
 
-        // 이미 방문한 노드를 또 방문하는 경우 -> 순환 발생
-        if(visited[index] == 1) {
-            return false;
-        }
-
-        // 탐색 완료한 노드라면 추가 탐색하지 않는다.
-        if(visited[index] == 2) {
-            return true;
-        }
-
-        visited[index] = 1;
-        List<Integer> preCourses = graph.get(index);
-        for(int preCourse : preCourses) {
-            // 이후 탐색 중에 순환이 발생하는 경우
-            if(!dfs(preCourse, graph, visited)) {
-                return false;
+                    // 선수강 강의를 모두 들었다면 큐에 추가
+                    if(indegrees[course] == 0) {
+                        queue.offer(course);
+                    }
+                }
             }
         }
 
-        visited[index] = 2;
-        return true;
+        // 모든 강의 수강 여부 반환
+        return processed == numCourses;
     }
 }
