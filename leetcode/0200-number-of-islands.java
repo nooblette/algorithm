@@ -12,27 +12,42 @@ class Solution {
                 }
                 // 탐색 시작 지점만큼 증가
                 result++;
-                dfs(i, j, grid, r, c);
+                bfs(i, j, grid, r, c);
             }
         }
 
         return result;
     }
 
-    private void dfs(int curR, int curC, char[][] grid, int r, int c) {
-        if(curR < 0 || curR >= r || curC < 0 || curC >= c || grid[curR][curC] == '0') {
-            return;
-        }
+    private void bfs(int startR, int startC, char[][] grid, int r, int c) {
+        Deque<List<Integer>> queue = new ArrayDeque<>();
 
         // 방문한 섬은 물로 변경한다.
-        grid[curR][curC] = '0';
+        grid[startR][startC] = '0';
+        queue.offer(List.of(startR, startC));
 
-        // 상하좌우
-        int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
-        for(int[] direction : directions) {
-            int newR = curR + direction[0];
-            int newC = curC + direction[1];
-            dfs(newR, newC, grid, r, c);
+        // BFS
+        while(!queue.isEmpty()) {
+            List<Integer> cur = queue.poll();
+            int curR = cur.get(0);
+            int curC = cur.get(1);
+
+            // 상하좌우
+            int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+
+            // 탐색
+            for(int[] direction : directions) {
+                int newR = curR + direction[0];
+                int newC = curC + direction[1];
+
+                if(newR < 0 || newR >= r || newC < 0 || newC >= c || grid[newR][newC] == '0') {
+                    continue;
+                }
+
+                // 방문한 섬은 물로 변경한다.
+                grid[newR][newC] = '0';
+                queue.offer(List.of(newR, newC));
+            }
         }
     }
 }
