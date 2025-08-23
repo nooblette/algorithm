@@ -1,32 +1,22 @@
 class Solution {
     public int eraseOverlapIntervals(int[][] intervals) {
-        // 주어진 배열을 시작 지점을 기준으로 오름차순 정렬
-        Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));
+        // 끝점을 기준으로 오름차순 정렬
+        Arrays.sort(intervals, (a, b) -> Integer.compare(a[1], b[1]));
 
-        // 기존 구간 탐색
-        List<int[]> newIntervals = new ArrayList<>();
-        int result = 0;
+        // 직전 구간의 끝점 저장
+        int lastEnd = Integer.MIN_VALUE;
+
+        int count = 0;
         for(int[] interval : intervals) {
-            if(newIntervals.isEmpty()) {
-                newIntervals.add(interval);
-                continue;
-            }
-            
-            int[] lastIntervals = newIntervals.get(newIntervals.size() - 1);
-
-            // 기존 구간과 겹치지 않는 경우
-            if(lastIntervals[1] <= interval[0]) {
-                // 새로운 구간에 추가
-                newIntervals.add(interval);
+            // 탐색 중인 구간이 직전 구간의 끝점과 겹친다면 현재 구간을 제거
+            if(interval[0] < lastEnd) {
+                count++;
             } else {
-                // 새로운 구간과 겹친다면 제거
-                result++;
-
-                // 가능한 구간 범위를 작게
-                lastIntervals[1] = Math.min(lastIntervals[1], interval[1]);
+                // 겹치지 않는다면 구간의 끝점 정보 갱신
+                lastEnd = interval[1];
             }
-        }
-        
-        return result;
+        }   
+
+        return count;
     }
 }
