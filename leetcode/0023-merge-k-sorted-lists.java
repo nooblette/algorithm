@@ -10,33 +10,30 @@
  */
 class Solution {
     public ListNode mergeKLists(ListNode[] lists) {
+        // 최소 힙 선언
+        PriorityQueue<ListNode> pq = new PriorityQueue<>((a, b) -> a.val - b.val);
+
+        // 주어진 연결 리스트의 첫번째 노드만 우선순위 큐에 삽입
+        for(ListNode node : lists) {
+            if(node != null) {
+                pq.offer(node);
+            }
+        }
+
+        // 우선순위 큐가 비어있을 때까지 원소를 꺼내어 연결리스트로 병합
         ListNode merged = new ListNode();
         ListNode head = merged;
 
-        while (true)  {
-            // 모든 연결 리스트 중 최소값 탐색
-            int minIndex = -1;
-            int minValue = Integer.MAX_VALUE;
-
-            for(int i = 0; i < lists.length; i++) {
-                if(lists[i] != null && lists[i].val < minValue) {
-                    minValue = lists[i].val;
-                    minIndex = i;
-                }
-            }
-
-            // 모든 리스트를 병합했다면 (더 이상 탐색할 최소값이 없다면) 종료
-            if(minIndex == -1) {
-                break;
-            }
-
-            // 연결 리스트에 추가
-            merged.next = lists[minIndex];
+        while(!pq.isEmpty()) {
+            ListNode node = pq.poll();
+            merged.next = node;
             merged = merged.next;
 
-            // 최소값의 노드를 다음으로 이동
-            lists[minIndex] = lists[minIndex].next;
-        }      
+            // 만약 다음 노드가 있다면 다시 우선순위 큐에 삽입
+            if(node.next != null) {
+                pq.offer(node.next);
+            }
+        }
 
         return head.next;
     }
