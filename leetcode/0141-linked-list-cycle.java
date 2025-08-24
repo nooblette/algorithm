@@ -11,21 +11,20 @@
  */
 public class Solution {
     public boolean hasCycle(ListNode head) {
-        // 예외 처리
-        if(head == null || head.next == null) {
-            return false;
-        }
+        ListNode slow = head;
+        ListNode fast = head;
 
-        ListNode cur = head;
-        while(cur != null) {
-            // 방문한 노드 체크
-            if(cur.val == Integer.MIN_VALUE) {
+        while(fast != null && fast.next != null) {
+            // Slow Runner는 1칸씩 이동
+            slow = slow.next;
+
+            // Fast Runner는 2칸씩 이동
+            fast = fast.next.next;
+
+            // 두 러너가 만난다면 순환이 발생
+            if(slow == fast) {
                 return true;
             }
-
-            // 방문한 노드 기록
-            cur.val = Integer.MIN_VALUE;
-            cur = cur.next;
         }
 
         return false;
