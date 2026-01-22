@@ -15,46 +15,36 @@
  */
 class Solution {
     public List<List<Integer>> levelOrder(TreeNode root) {
-        // 예외 처리
-        if(root == null) {
-            return new ArrayList<>();
-        }
-
         List<List<Integer>> result = new ArrayList<>();
 
-        // BFS Queue
-        Deque<TreeNode> queue = new ArrayDeque<>();
-
-        // 레벨별 구분을 위한 자식 노드 Queue
-        Deque<TreeNode> childQueue = new ArrayDeque<>();
+        // 예외 처리
+        if(root == null) {
+            return result;
+        }
 
         // BFS
-        queue.addLast(root);
-        result.add(List.of(root.val));
+        Deque<TreeNode> queue = new ArrayDeque<>();
+        queue.offer(root);
         while(!queue.isEmpty()) {
-            // 레벨별 구분을 위해 현재 노드의 자식 노드들을 자식 노드 Queue에 삽입
-            while(!queue.isEmpty()) {
-                TreeNode cur = queue.removeFirst();
+            // 현재 레벨에서의 노드만 탐색하기 위해 큐에 있는 노드의 개수만큼만 탐색
+            int size = queue.size();
+
+            List<Integer> nodes = new ArrayList<>();
+            for(int i = 0; i < size; i++) {
+                TreeNode cur = queue.poll();
+
                 if(cur.left != null) {
-                    childQueue.addLast(cur.left);
+                    queue.offer(cur.left);
                 }
 
                 if(cur.right != null) {
-                    childQueue.addLast(cur.right);
+                    queue.offer(cur.right);
                 }
-            }
 
-            // 현재 노드의 모든 자식 노드들을 탐색했다면 자식 노드 Queue에서 BFS Queue로 이동
-            List<Integer> nodes = new ArrayList<>();
-            while(!childQueue.isEmpty()) {
-                TreeNode child = childQueue.removeFirst();
-                nodes.add(child.val);
-                queue.addLast(child);
+                nodes.add(cur.val);
             }
-
-            if(!nodes.isEmpty()) {
-                result.add(nodes);
-            }
+            
+            result.add(nodes);
         }
 
         return result;
