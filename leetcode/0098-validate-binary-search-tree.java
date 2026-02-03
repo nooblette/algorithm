@@ -14,45 +14,27 @@
  * }
  */
 class Solution {
+    private Integer prev;
+
     public boolean isValidBST(TreeNode root) {
-        // 주어진 트리를 중위 순회        
-        List<Integer> values = inorder(root);
-
-        // 오름차순 정렬 여부 확인
-        for(int i = 1; i < values.size(); i++) {
-            if(values.get(i - 1) >= values.get(i)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private List<Integer> inorder(TreeNode root) {
+        // 예외 처리
         if(root == null) {
-            return new ArrayList<>();
+            return true;
         }
 
-        // 리프 노드인 경우
-        if(root.left == null && root.right == null) {
-            return List.of(root.val);
+        // 트리를 중위 순회(left -> root -> right)하여 검증
+        // 왼쪽 서브트리 검증
+        if(!isValidBST(root.left)) {
+            return false;
         }
 
-        // 왼쪽 서브트리 연결
-        List<Integer> left = new ArrayList<>();
-        if(root.left != null) {
-            left = inorder(root.left);
+        // 중위 순회하고 있으므로 현재 노드는 항상 이전 값보다 커야함
+        if(prev != null && prev >= root.val) {
+            return false;
         }
+        prev = root.val;
 
-        // 오른쪽 서브트리 연결
-        List<Integer> right = new ArrayList<>();
-        if(root.right != null) {
-            right = inorder(root.right);
-        }
-
-        // 원소 추가를 위해 깊은 복사
-        List<Integer> values = new ArrayList<>(left);
-        values.add(root.val);
-        values.addAll(right);
-        return values;
+        // 오른쪽 서브트리 검증
+        return isValidBST(root.right);
     }
 }
