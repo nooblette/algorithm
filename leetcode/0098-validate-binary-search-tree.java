@@ -14,27 +14,21 @@
  * }
  */
 class Solution {
-    private Integer prev;
-
     public boolean isValidBST(TreeNode root) {
-        // 예외 처리
-        if(root == null) {
+        // BST를 유지하기 위해서 각 노드가 속할 수 있는 범위 내에 있는지 검증
+        return validRange(root, null, null);
+    }
+
+    private boolean validRange(TreeNode node, Integer min, Integer max) {
+        if(node == null) {
             return true;
         }
 
-        // 트리를 중위 순회(left -> root -> right)하여 검증
-        // 왼쪽 서브트리 검증
-        if(!isValidBST(root.left)) {
+        // 현재 노드가 BST를 유지하는 유효한 범위내에 있는지 검증
+        if((min != null && node.val <= min) || (max != null && node.val >= max)) {
             return false;
         }
 
-        // 중위 순회하고 있으므로 현재 노드는 항상 이전 값보다 커야함
-        if(prev != null && prev >= root.val) {
-            return false;
-        }
-        prev = root.val;
-
-        // 오른쪽 서브트리 검증
-        return isValidBST(root.right);
+        return validRange(node.left, min, node.val) && validRange(node.right, node.val, max);
     }
 }
