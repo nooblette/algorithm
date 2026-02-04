@@ -14,30 +14,33 @@
  * }
  */
 class Solution {
+    private int count = 0;
+    private int result = -1;
+
     public int kthSmallest(TreeNode root, int k) {
-        Deque<TreeNode> stack = new ArrayDeque<>();
-        TreeNode cur = root;
+        // BST를 중위 순회하면 노드를 오름차순 정렬한 순서대로 방문할 수 있다.
+        // 단, 재귀로 중위 순회를 구현한다.
+        inorder(root, k);
+        return result;
+    }
 
-        // BST를 중위 순회하면 오름차순으로 노드를 방문할 수 있다.
-        while(cur != null || !stack.isEmpty()) {
-            // 가장 왼쪽 자식 노드로 이동
-            while(cur != null) {
-                stack.push(cur);
-                cur = cur.left;
-            }
-
-            // 현재 스택에는 탐색에 남은 노드 중 가장 작은 값이 상단에 있으므로 꺼내고 k번째 작은 원소인지 비교한다.
-            cur = stack.pop();
-            if(k == 1) {
-                return cur.val;
-            }
-            k--;
-
-            // 다시 오른쪽 자식 노드에 대해서 반복한다.
-            cur = cur.right;
+    private void inorder(TreeNode node, int k) {
+        // 예외 처리
+        if(node == null) {
+            return;
         }
 
-        // 예외 처리
-        return root.val;
+        // 가장 왼쪽 서브트리로 이동
+        inorder(node.left, k);
+
+        // k번째 작은 원소인지 판별
+        count++;
+        if(count == k) {
+            result = node.val;
+            return;
+        }
+
+        // 오른쪽 서브트리에 대해 반복
+        inorder(node.right, k);
     }
 }
