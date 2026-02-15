@@ -10,38 +10,32 @@
  */
 class Solution {
     public ListNode mergeKLists(ListNode[] lists) {
+        // list의 각 원소들로 우선수위 큐 선언
+        // ListNode는 Comparable의 하위 클래스가 아니므로 생성자에 Comparator를 직접 넘겨줘야한다.
+        PriorityQueue<ListNode> pq = new PriorityQueue<>((a, b) -> a.val - b.val);
+        for(ListNode list : lists) {
+            if(list != null) {
+                pq.offer(list);
+            }
+        }
+
+        // 우선순위 큐로 선언했으므로 가장 앞에 있는 원소가 최소 값을 갖는 노드 (최소 노드)
         ListNode result = new ListNode();
         ListNode cur = result;
 
-        while(true) {
-            // lists에서 최소 원소 탐색
-            ListNode min = null;
-            int minIndex = 0;
-            int nullCnt = 0;
-            for(int i = 0; i < lists.length; i++) {
-                if(lists[i] == null) {
-                    nullCnt++;
-                    continue;
-                }
+        while(!pq.isEmpty()) {
+            ListNode min = pq.poll();
 
-                if(min == null || lists[i].val < min.val) {
-                    min = lists[i];
-                    minIndex = i;
-                }
-            }
-
-            // 모든 노드가 null을 가리킨다면 탐색 종료
-            if(nullCnt == lists.length) {
-                return result.next;
-            }
-
-            // 반환할 연결 리스트에 추가
+            // 반환할 리스트에 연결
             cur.next = min;
             cur = cur.next;
 
-            // 최소 원소를 찾았다면 댜음 노드를 가리키도록 변경
-            ListNode minNode = lists[minIndex];
-            lists[minIndex] = minNode.next;
+            // 최소 노드의 다음노드를 다시 우선순위 큐에 추가
+            if(min.next != null) {
+                pq.offer(min.next);
+            }
         }
+
+        return result.next;
     }
 }
