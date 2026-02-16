@@ -7,16 +7,21 @@ class Solution {
             map.put(num, count + 1);
         }
 
-        // 등장 횟수를 기준으로 내림차순 정렬하는 우선순위 큐 생성
-        PriorityQueue<List<Integer>> pq = new PriorityQueue<>((a, b) -> b.get(0) - a.get(0));
-        map.forEach((key, frequent) -> pq.offer(List.of(frequent, key)));
+        // 등장 횟수를 기준으로 오름차순 정렬하는 우선순위 큐 생성
+        // 우선순위 큐의 크기가 k를 넘어가면 가장 앞에 있는 최소 원소를 제거한다.
+        // 우선순위 큐의 크기를 k로 유지하여 시간 복잡도를 O(nlogn)에서 O(nlogk)로 개선하는 것이 핵심
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[0] - b[0]);
+        map.forEach((key, frequent) -> {
+            pq.offer(new int[]{frequent, key});
+            
+            if(pq.size() > k) {
+                pq.poll();
+            }
+        });
 
-        int[] result = new int[k];
-        for(int i = k; i > 0; i--) {
-            List<Integer> node = pq.poll();
-            result[k - i] = node.get(1);
-        }
-
-        return result;
+        // 우선수위 큐의 크기가 k를 유지하므로 바로 int[]로 변환하여 반환
+        return pq.stream()
+         .mapToInt(result -> result[1])
+         .toArray();
     }
 }
