@@ -1,45 +1,29 @@
 class Solution {
     public void setZeroes(int[][] matrix) {
-        // 최초 0인 인덱스 저장
-        List<List<Integer>> indexes = new ArrayList<>();
+        int m = matrix.length;
+        int n = matrix[0].length;
 
-        for(int i = 0; i < matrix.length; i++) {
-            for(int j = 0; j < matrix[0].length; j++) {
+        // 최초 값이 0인 위치 저장
+        // 2차원 배열이 아니라 1차원 배열 두 개를 선언하여 공간 복잡도를 O(m + n)으로 개선
+        boolean[] rows = new boolean[m];
+        boolean[] cols = new boolean[n];
+
+        for(int i = 0; i < m; i++) {
+            for(int j = 0; j < n; j++) {
                 if(matrix[i][j] == 0) {
-                    indexes.add(List.of(i, j));
+                    rows[i] = true;
+                    cols[j] = true;
                 }
             }
         }
 
-        for(List<Integer> index : indexes) {
-            int i = index.get(0);
-            int j = index.get(1);
-
-            // 상
-            while(i >= 0) {
-                matrix[i][j] = 0;
-                i--;
-            }
-            i = index.get(0);
-
-            // 하
-            while(i < matrix.length) {
-                matrix[i][j] = 0;
-                i++;
-            }
-            i = index.get(0);
-
-            // 좌
-            while(j >= 0) {
-                matrix[i][j] = 0;
-                j--;
-            }
-            j = index.get(1);
-
-            // 우
-            while(j < matrix[0].length) {
-                matrix[i][j] = 0;
-                j++;
+        // 기존 배열을 0으로 변경
+        for(int i = 0; i < m; i++) {
+            for(int j = 0; j < n; j++) {
+                // 해당 행이나 열에 0인 값이 있다면 그 행, 열은 모두 0으로 만든다.
+                if(rows[i] || cols[j]) {
+                    matrix[i][j] = 0;
+                }
             }
         }
     }
