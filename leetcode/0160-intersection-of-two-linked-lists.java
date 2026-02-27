@@ -11,23 +11,43 @@
  */
 public class Solution {
     public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
-        // 연결 리스트 headA의 노드들을 HashSet에 저장 (일반적으로 조회 시간복잡도가 O(1))
-        Set<ListNode> visited = new HashSet<>();
-        while(headA != null) {
-            visited.add(headA);
-            headA = headA.next;
+        // 두 연결 리스트의 전체 길이 탐색
+        int m = getLength(headA);
+        int n = getLength(headB);
+
+        // 두 연결 리스트 중 길이가 긴 노드는 두 연결 리스트의 길이 차이만큼 이동
+        // 교차 지점을 찾기 위한 출발 지점을 동일하게 맞춘다.
+        // 길이 차이를 이용해 출발 지점을 맞추어 탐색함으로써 공간 복잡도를 O(1)로 개선한다. (별도 방문 노드 기록 공간이 필요 없음)
+        int diff = Math.abs(m - n);
+        if(m > n) {
+            while(diff > 0) {
+                headA = headA.next;
+                diff--;
+            } 
+        } else {
+            while(diff > 0) {
+                headB = headB.next;
+                diff--;
+            }
         }
 
-        // 연결 리스트 headB의 노드들을 탐색하며 visited Set에 있는지 확인
-        while(headB != null) {
-            if(visited.contains(headB)) {
-                return headB;
-            }
-
+        // 두 연결 리스트의 노드가 같은 힙 메모리 공간을 참조할때까지 반복
+        while(headA != headB) {
+            headA = headA.next;
             headB = headB.next;
         }
 
-        // 교차지점이 없는 경우
-        return null;
+        // 두 연결 리스트가 같은 힙 메모리 공간을 참조(= 교차지점)하거나 연결 리스트 끝까지 이동해 null을 반환한다.
+        return headA;
+    }
+
+    private int getLength(ListNode node) {
+        int length = 0;
+        while(node != null) {
+            length++;
+            node = node.next;
+        }
+
+        return length;
     }
 }
