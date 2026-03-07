@@ -21,29 +21,38 @@ class Solution {
         }
 
         List<List<Integer>> result = new ArrayList<>();
-        result.add(List.of(root.val));
 
         // BFS
         Deque<TreeNode> queue = new ArrayDeque<>();
         queue.offer(root);
-        boolean isReverse = true;
-        while(!queue.isEmpty()) {            
-            List<Integer> list = new ArrayList<>();
+        boolean isReverse = false;
+        while(!queue.isEmpty()) {        
+            // Zigzag를 양방향에서 삽입이 가능한 Deque으로 구현    
+            Deque<Integer> deque = new ArrayDeque<>();
 
             // 레벨별 탐색
             int levelSize = queue.size();
             for(int i = 0; i < levelSize; i++) {
                 TreeNode node = queue.poll();
-                addListAndQueue(node.left, list, queue);
-                addListAndQueue(node.right, list, queue);
-            }
+                if(node != null) {
+                    // 역순 여부에 따른 양방향 삽입
+                    if(isReverse) {
+                        deque.addFirst(node.val);
+                    } else {
+                        deque.addLast(node.val);
+                    }
 
-            // 역순 여부에 따라 리스트를 뒤집어서 추가
-            if(isReverse) {
-                Collections.reverse(list);
+                    if(node.left != null) {
+                        queue.offer(node.left);
+                    }
+
+                    if(node.right != null) {
+                        queue.offer(node.right);
+                    }
+                }
             }
-            if(!list.isEmpty()) {
-                result.add(list);
+            if(!deque.isEmpty()) {
+                result.add(new ArrayList<>(deque));
             }
 
             // Zigzag를 위함
@@ -51,14 +60,5 @@ class Solution {
         }
 
         return result;
-    }
-
-    private void addListAndQueue(TreeNode node, List<Integer> list, Deque<TreeNode> queue) {
-        if(node == null) {
-            return;
-        }
-
-        list.add(node.val);
-        queue.offer(node);
     }
 }
