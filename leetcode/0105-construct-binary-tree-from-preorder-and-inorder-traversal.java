@@ -15,33 +15,26 @@
  */
 class Solution {
     public TreeNode buildTree(int[] preorder, int[] inorder) {
-        // preorder의 첫번째 원소(preorderIndex)를 루트로 삼고 이를 기준으로 inorder를 분할하여 왼쪽 서브트리와 오른쪽 서브트리를 탐색
-        // preorder의 첫번째 원소의 값(preorder[preorderIndex])에 해당하는 inorder의 인덱스를 O(1)로 찾기 위해 map을 선언
-        Map<Integer, Integer> indexByVal = new HashMap<>();
-        for(int i = 0; i < inorder.length; i++) {
-            indexByVal.put(inorder[i], i);
-        }
-
-        return buildTree(preorder, indexByVal, 0, 0, inorder.length);
-    }
-
-    private TreeNode buildTree(int[] preorder, Map<Integer, Integer> indexByVal, int preorderIndex, int left, int right) {
-        if(left >= right) {
+        if(preorder.length == 0) {
             return null;
         }
         
-        // 전위 순회(preorder)의 첫 원소는 항상 루트
-        int rootVal = preorder[preorderIndex];
-        TreeNode root = new TreeNode(rootVal);
+        // preorder: root -> left -> right
+        // inorder: left -> root -> right
+        TreeNode root = new TreeNode(preorder[0]);
 
-        // root에 해당하는 중위 순회(inorder)의 인덱스 확인
-        int index = indexByVal.get(rootVal);
+        // root의 값이 inorder에서 등장하는 인덱스 탐색
+        int rootIndex = -1;
+        for(int i = 0; i < inorder.length; i++) {
+            if(inorder[i] == preorder[0]) {
+                rootIndex = i;
+                break;
+            }
+        }
 
-        // 중위 순회 배열(inorder)에서 root의 index를 기준으로 인덱스 왼쪽 서브트리와 오른쪽 서브트리를 분할하여 탐색 반복
-        root.left = buildTree(preorder, indexByVal, preorderIndex + 1, left, index);
-
-        // 오른쪽 서브트리에서 preorderIndex는 왼쪽 서브트리의 크기(index - left)만큼 건너 뛴 인덱스에서 + 1을 취해야한다.
-        root.right = buildTree(preorder, indexByVal, preorderIndex + index - left + 1 , index + 1, right);
+        // 왼쪽 서브트리와 오른쪽 서브트리의 크기는 같다는 점을 이용해 해당 인덱스를 기준으로 왼쪽과 오른쪽으로 나누어 반복
+        root.left = buildTree(Arrays.copyOfRange(preorder, 1, rootIndex + 1), Arrays.copyOfRange(inorder, 0, rootIndex));
+        root.right = buildTree(Arrays.copyOfRange(preorder, rootIndex + 1, preorder.length), Arrays.copyOfRange(inorder, rootIndex + 1, inorder.length));
 
         return root;
     }
